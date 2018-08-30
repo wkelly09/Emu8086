@@ -1,0 +1,906 @@
+GRAPH MACRO            
+    mov ah, 00H
+    mov al, 13h 
+    int 10h
+  ENDM
+
+.MODEL SMALL
+
+.STACK 100H
+
+.DATA
+;VARIABLES MENU
+       X             DB '?'
+       Y             DB '?'
+       MSGBienvenido DB " [--Paint--] $"  
+       MSGSalir      DB "q para salir $"  
+       MSGEspera     DB "Digite una opcion: $" 
+       MSG1          DB "1 CUADRADO o RECTANGULO $"
+       MSG2          DB "2 CIRCULO $"
+       MSG3          DB "3 LINEA HORIZONTAL $"
+       MSG4          DB "4 TRIANGULO $"
+       MSG5          DB "5 DIAGONAL $"   
+       MsgEspere     DB 0AH,0DH,'Presione cualquier tecla para continuar',0DH,0AH,'$'
+;VARIABLES FIGURA CUATRO LADOS
+       num           DW 0
+       aux           DB '?'
+       num1          DW 0
+       aux1          DB '?'  
+       numColor      DB 0
+       auxColor      DB '?'
+       MSCUADRADO1   DB "INGRESAR LARGO: $" 
+       MSCUADRADO2   DB "INGRESAR ANCHO: $"
+       MSCUADRADO3   DB "INGRESAR COLOR: $"   
+;VARIABLES CISRUCLO        
+       ybeg          DW 90 
+       xbeg          DW 90 
+       xend          DW 90h  
+       x1            DW 60h  
+       y1            DW 60h  
+       rad           DW 30
+       pc            DW 0 
+       vaux1         DW 1 
+       vincx         DW 0 
+       vincy         DW 0 
+       vaux2         DW 0  
+       xc            DW 0   
+       auxc1         DB '?' 
+       yc            DW 0   
+       auxc2         DB '?'
+       CirColor      DB 0
+       auxCColor     DB '?'
+       MSCIRCULO1    DB "INGRESAR LARGO: $" 
+       MSCIRCULO2    DB "INGRESAR ANCHO: $"
+       MSCIRCULO3    DB "INGRESAR COLOR: $" 
+;VARIABLEAS LINEA HORIZONTAL
+       COORDX        DW 0
+       auxX          DB '?'
+       COORDX1       DW 0
+       auxX1         DB '?'
+       COORDY        DW 0
+       auxY1         DB '?'  
+       lineaColor    DB 0
+       auxLColor     DB '?'
+       MSlINEA1      DB "EJE X DE INICIO: $" 
+       MSlINEA2      DB "EJE Y DE INICIO: $" 
+       MSlINEA3      DB "EJE X DE FIN: $" 
+       MSlINEA4      DB "INGRESE EL COLOR: $"       
+;VARIABLES TRIANGULO 
+       a             DW '?' 
+       b             DW '?'
+       contador      DB 0 
+       mensaje1      DB "TAMANO TRIANGULO DEL 1 AL 9: $" 
+       Posx          DW 0
+       auxPosX       DB '?'
+       PosY          DW 0
+       auxPosY       DB '?'
+       tamano        DW 0
+       auxTamano     DB '?'  
+       TrianColor    DB 0
+       auxTriColor   DB '?'
+       MSTRI1        DB "EJE X: $" 
+       MSTRI2        DB "EJE Y: $" 
+       MSTRI3        DB "TAMANO DEL TRIANGULO DEL 1 AL 9: $" 
+       MSTRI4        DB "INGRESE EL COLOR: $"  
+;VARIABLES DIAGONAL
+       inDi          DW 0   
+       auxDi         DB '?' 
+       finDi         DW 0   
+       auxfDi        DB '?'
+       DiColor       DB 0
+       auxDiColor    DB '?'
+       MSDiag1       DB "INICIO EN Y: $" 
+       MSDiag2       DB "FINAL EN Y: $"
+       MSDiag3       DB "INGRESAR COLOR: $" 
+       colorDi       DB 12
+
+.CODE  
+    INICIO PROC
+      MOV AX,@DATA        
+      MOV DS,AX
+      GRAPH
+    ;PARA MOSTRAR EN PANTALLA
+      MOV X, 10
+      MOV Y, 1 
+      MOV AH, 2
+      MOV DL, X
+      MOV DH, Y
+      INT 10H
+      LEA DX, MSGBienvenido 
+      MOV AH, 09        
+      INT 21H
+    ;PARA MOSTRAR EN PANTALLA
+      MOV X, 02
+      MOV Y, 3 
+      MOV AH, 2
+      MOV DL, X
+      MOV DH, Y
+      INT 10H
+      LEA DX, MSG1 
+      MOV AH, 09         
+      INT 21H
+    ;PARA MOSTRAR EN PANTALLA
+      MOV X, 02
+      MOV Y, 4
+      MOV AH, 2
+      MOV DL, X
+      MOV DH, Y
+      INT 10H         
+      LEA DX, MSG2 
+      MOV AH, 09
+      INT 21H
+    ;PARA MOSTRAR EN PANTALLA
+      MOV X, 02
+      MOV Y, 5
+      MOV AH, 2
+      MOV DL, X
+      MOV DH, Y
+      INT 10H         
+      LEA DX, MSG3 
+      MOV AH, 09
+      INT 21H 
+     ;PARA MOSTRAR EN PANTALLA
+      MOV X, 02
+      MOV Y, 6
+      MOV AH, 2
+      MOV DL, X
+      MOV DH, Y
+      INT 10H         
+      LEA DX, MSG4 
+      MOV AH, 09
+      INT 21H
+     ;PARA MOSTRAR EN PANTALLA
+      MOV X, 02
+      MOV Y, 7
+      MOV AH, 2
+      MOV DL, X
+      MOV DH, Y
+      INT 10H         
+      LEA DX, MSG5 
+      MOV AH, 09
+      INT 21H
+    ;PARA MOSTRAR EN PANTALLA
+      MOV X, 02
+      MOV Y, 9 
+      MOV AH, 2
+      MOV DL, X
+      MOV DH, Y
+      INT 10H         
+      LEA DX, MSGSalir
+      MOV AH, 09
+      INT 21H 
+    ;PARA MOSTRAR EN PANTALLA
+      MOV X, 02
+      MOV Y, 11
+      MOV AH, 2
+      MOV DL, X
+      MOV DH, Y
+      INT 10H         
+      LEA DX, MSGEspera
+      MOV AH, 09
+      INT 21H 
+      MOV AH , 1
+      INT 21H
+      CALL COMPARA 
+      CALL SALIR
+      RET 
+    ENDP
+    
+;************************** OPCIONES MENU *************************** 
+    UNO:
+        GRAPH 
+        CALL LIMPIAR
+        JMP CuatroLados     
+    DOS: 
+        GRAPH
+        CALL LIMPIAR
+        CALL circulo          
+    TRES:
+        GRAPH
+        CALL LIMPIAR
+        CALL HORIZONTAL 
+    CUATRO: 
+        GRAPH
+        CALL LIMPIAR          
+        JMP main 
+    CINCO: 
+        GRAPH
+        CALL LIMPIAR          
+        JMP diagonal 
+
+;************************** PROCESOS COMPARTIDOS********************
+     COMPARA PROC
+        CMP AL, 31H
+        JE  UNO
+        CMP AL, 32H
+        JE  DOS
+        CMP AL, 33H
+        JE  TRES 
+        CMP AL, 34H
+        JE  CUATRO 
+        CMP AL, 35H
+        JE  CINCO
+        CMP AL, 71H
+        JE  SALIR 
+        JMP INICIO
+        RET
+     ENDP  
+         
+     LIMPIAR PROC
+        GRAPH   
+        MOV DX, OFFSET MsgEspere
+        MOV AH,9H
+        INT 21H
+        MOV AH,0H                
+        INT 16H 
+        MOV AH,0
+        MOV AL,3
+        INT 10H     
+        RET
+     ENDP  
+             
+     SALIR PROC
+       MOV AH,00
+       MOV AL,03
+       INT 10H     
+       MOV AH, 4CH 
+       INT 21H   
+       RET
+     ENDP      
+  
+;------FIGURA CUATRO LADOS------
+CuatroLados: 
+;************** Pedir las variables de la figura de cuatro lados **************   
+   GRAPH 
+;************** ANCHO *****************  
+   MOV X, 10
+   MOV Y, 02
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSCUADRADO1      
+   MOV AH,9H
+   INT 21H    
+   mov ah,01h   
+   int 21h
+   sub al,30h
+   mov bl,10    
+   mul bl       
+   mov aux,al
+   mov ah,01h   
+   int 21h      
+   sub al,30h
+   add aux,al   
+   mov bl,aux   
+   mov num,bx 
+      
+;************** LARGO ***************** 
+   MOV X, 10
+   MOV Y, 03
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSCUADRADO2        
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h 
+   sub al,30h 
+   mov bl,10    
+   mul bl       
+   mov aux1,al
+   mov ah,01h  
+   int 21h      
+   sub al,30h 
+   add aux1,al   
+   mov bl,aux1  
+   mov num1,bx 
+    
+;************** COLOR *****************
+   MOV X, 10
+   MOV Y, 04
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSCUADRADO3    
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h  
+   sub al,30h 
+   mov bl,10    
+   mul bl      
+   mov auxColor,al 
+   mov ah,01h 
+   int 21h      
+   sub al,30h 
+   add auxColor,al
+   mov bl,auxColor   
+   mov bh,0h   
+   mov numColor,bl
+      
+;arriba:
+        mov cx, 150 
+        add cx, num  
+        mov dx, 50 
+        mov al, bl  
+    u1: mov ah, 0ch      
+        int 10h
+        dec cx
+        cmp cx,150
+        jae u1
+;abajo:
+        mov cx, 150  
+        add cx, num 
+        mov dx, 50 
+        add dx, num1
+        mov al, bl       
+    u2: mov ah, 0ch     
+        int 10h
+        dec cx
+        cmp cx, 150
+        ja u2
+;izquierda:
+        mov cx, 150      
+        mov dx, 50
+        add dx, num1  
+        mov al, bl      
+    u3: mov ah, 0ch     
+        int 10h
+        dec dx
+        cmp dx, 50
+        ja u3 
+;derecha:
+        mov cx, 150 
+        add cx, num 
+        mov dx, 50  
+        add dx,num1
+        mov al, bl     
+    u4: mov ah, 0ch    
+        int 10h
+        dec dx
+        cmp dx, 50
+        ja u4
+        mov ah,00
+        int 16h ;AQUI
+        mov ah,00
+        mov al,03 
+        int 10h    
+        CALL limpiar
+        CALL inicio	
+                 
+;------CIRCULO------ 
+
+circulo proc  
+   GRAPH
+;************** ANCHO *****************  
+   MOV X, 10
+   MOV Y, 02
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSCIRCULO1      
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h
+   sub al,30h
+   mov bl,10    
+   mul bl       
+   mov auxc1,al 
+   mov ah,01h   
+   int 21h      
+   sub al,30h  
+   add auxc1,al   
+   mov bl,auxc1   
+   mov xc,bx 
+      
+;************** LARGO ***************** 
+   MOV X, 10
+   MOV Y, 03
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSCIRCULO2        
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h 
+   sub al,30h 
+   mov bl,10    
+   mul bl       
+   mov auxc2,al
+   mov ah,01h  
+   int 21h      
+   sub al,30h 
+   add auxc2,al   
+   mov bl,auxc2  
+   mov yc,bx 
+    
+;************** COLOR *****************
+   MOV X, 10
+   MOV Y, 04
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSCIRCULO3    
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h  
+   sub al,30h 
+   mov bl,10    
+   mul bl      
+   mov auxCColor,al 
+   mov ah,01h 
+   int 21h      
+   sub al,30h 
+   add auxCColor,al
+   mov bl,auxCColor   
+   mov bh,0h   
+   mov CirColor,bl 
+   
+    mov ax,xc 
+    xor ax,ax 
+    mov xc,ax
+    mov ax,1 
+    sbb rad,ax 
+    mov ax,rad 
+    mov pc,ax 
+    jmp short a226 
+    a58: 
+    mov bx,pc 
+    or bx,bx 
+    jl short a114  
+    inc xc 
+    mov ax,xc   
+    jmp short a142 
+    a114: 
+    inc xc   
+    dec yc  
+    mov ax,xc
+    sub ax,yc 
+    a142: 
+    shl ax,1  
+    inc ax 
+    sub pc,ax 
+    call pxp 
+    a226: 
+    mov ax,xc 
+    cmp ax,yc 
+    jl short a58 
+    ;esperar
+    mov ah,00
+    int 16h ;AQUI
+    mov ah,00
+    mov al,03 
+    int 10h    
+    CALL limpiar
+    CALL inicio	 
+  ret
+endp 
+
+pxp proc  
+    mov ax,x1 
+    add ax,xc 
+    mov cx,ax 
+    mov ax,y1 
+    add ax,yc            
+    mov dx,ax 
+    call pixel 
+    mov ax,x1 
+    sub ax,xc 
+    mov cx,ax 
+    mov ax,y1 
+    add ax,yc         
+    mov dx,ax 
+    call pixel 
+    mov ax,x1  
+    add ax,xc 
+    mov cx,ax 
+    mov ax,y1 
+    sub ax,yc           
+    mov dx,ax 
+    call pixel 
+    mov ax,x1 
+    sub ax,xc 
+    mov cx,ax 
+    mov ax,y1 
+    sub ax,yc          
+    mov dx,ax 
+    call pixel 
+    mov ax,x1 
+    add ax,yc 
+    mov cx,ax 
+    mov ax,y1 
+    add ax,xc         
+    mov dx,ax 
+    call pixel 
+    mov ax,x1 
+    sub ax,yc 
+    mov cx,ax 
+    mov ax,y1 
+    add ax,xc           
+    mov dx,ax 
+    call pixel 
+    mov ax,x1  
+    add ax,yc 
+    mov cx,ax 
+    mov ax,y1 
+    sub ax,xc         
+    mov dx,ax 
+    call pixel 
+    mov ax,x1  
+    sub ax,yc 
+    mov cx,ax 
+    mov ax,y1 
+    sub ax,xc         
+    mov dx,ax 
+    call pixel
+  ret 
+endp 
+ 
+
+pixel proc 
+    mov ah,12 
+    mov al,CirColor	
+    mov bh,0  
+    int 10h 
+  ret 
+endp 
+
+;------Linea Horizontal------  
+
+
+HORIZONTAL PROC  
+    GRAPH 
+
+;************ Cordenada x1 *****************  
+   MOV X, 10
+   MOV Y, 02
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSlINEA1      
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h 
+   sub al,30h
+   mov bl,10    
+   mul bl       
+   mov auxX,al 
+   mov ah,01h   
+   int 21h   
+   sub al,30h
+   add auxX,al   
+   mov bl,auxX   
+   mov COORDX,bx 
+      
+;************ Cordenada x2 ***************** 
+   MOV X, 10
+   MOV Y, 03
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSlINEA2        
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h 
+   sub al,30h 
+   mov bl,10    
+   mul bl       
+   mov auxX1,al 
+   mov ah,01h  
+   int 21h      
+   sub al,30h 
+   add auxX1,al   
+   mov bl,auxX1  
+   mov COORDX1,bx 
+   
+;************ Cordenada y ***************** 
+   MOV X, 10
+   MOV Y, 04
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSlINEA3        
+   MOV AH,9H
+   INT 21H 
+   mov ah,01h   
+   int 21h 
+   sub al,30h 
+   mov bl,10    
+   mul bl
+   mov auxY1,al
+   mov ah,01h  
+   int 21h       
+   sub al,30h
+   add auxY1,al   
+   mov bl,auxY1  
+   mov COORDY,bx   
+    
+;************** COLOR *****************
+   MOV X, 10
+   MOV Y, 05
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSlINEA4    
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h  
+   sub al,30h 
+   mov bl,10    
+   mul bl      
+   mov lineaColor,al 
+   mov ah,01h 
+   int 21h      
+   sub al,30h 
+   add lineaColor,al
+   mov bl,lineaColor   
+   mov bh,0h   
+   mov lineaColor,bl     
+    
+                 
+   MOV CX,COORDX    
+   MOV DX,COORDX1    
+    
+RE:
+    MOV AH,0CH    
+    MOV AL,lineaColor  
+    INT 10H
+    
+    INC CX        
+    CMP CX,COORDY   
+    JNE RE
+    
+        ;esperar
+    mov ah,00
+    int 16h ;AQUI
+    mov ah,00
+    mov al,03 
+    int 10h    
+    CALL limpiar
+    CALL inicio	
+;    
+;    CALL limpiar
+;    CALL inicio	
+            
+               
+ENDP 
+      
+;------Triangulo------ 
+
+main: 
+GRAPH
+  ;************ eje x *****************  
+   MOV X, 05
+   MOV Y, 02
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSTRI1      
+   MOV AH,9H
+   INT 21H 
+   mov ah,01h   
+   int 21h  
+   sub al,30h
+   mov bl,10    
+   mul bl       
+   mov auxPosX,al 
+   mov ah,01h   
+   int 21h     
+   sub al,30h
+   add auxPosX,al   
+   mov bl,auxPosX   
+   mov Posx,bx 
+      
+;************ eje y ***************** 
+   MOV X, 05
+   MOV Y, 03
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSTRI2        
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h 
+   sub al,30h 
+   mov bl,10    
+   mul bl       
+   mov auxPosY,al 
+   mov ah,01h  
+   int 21h      
+   sub al,30h 
+   add auxPosY,al   
+   mov bl,auxPosY  
+   mov PosY,bx 
+;************** COLOR *****************
+   MOV X, 05
+   MOV Y, 04
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSTRI4    
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h  
+   sub al,30h 
+   mov bl,10    
+   mul bl      
+   mov auxTriColor,al 
+   mov ah,01h 
+   int 21h      
+   sub al,30h 
+   add auxTriColor,al
+   mov bl,auxTriColor   
+   mov bh,0h   
+   mov TrianColor,bl
+;****MSG**** 
+   MOV X, 05
+   MOV Y, 05
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   mov dx,offset mensaje1 
+   mov ah,9 
+   int 21h 
+   mov ah,1 
+   int 21h 
+   mov bl,al 
+   sub bl,20h ;30
+    
+    ;*****color******* 
+    mov ah,12 
+    mov al,TrianColor
+    
+    ;++++++ principal +++++++ 
+    ciclo1: 
+    call pixelt 
+    call cont 
+    cmp contador,bl 
+    je slinea 
+    jmp ciclo1
+    ;----procedimientos ---- 
+    pixelt: 
+    mov cx,a 
+    mov dx,b 
+    int 10h 
+    ret 
+    cont: 
+    inc a 
+    inc contador 
+    ret
+    slinea: 
+    inc b 
+    sub a,bx 
+    add a,1 
+    ;-------; 
+    cmp bl,2; 
+    je fin  ; 
+    cmp bl,1; 
+    je fin  ; 
+    ;-------; 
+    sub bx,2 
+    mov contador,0 
+    jmp ciclo1 
+    fin: 
+    ;esperar
+    mov ah,00
+    int 16h ;AQUI
+    mov ah,00
+    mov al,03 
+    int 10h    
+    CALL limpiar
+    CALL inicio	
+
+;------Diagonal------
+
+diagonal:
+        GRAPH 
+;************** INICIO *****************  
+   MOV X, 10
+   MOV Y, 02
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSDiag1      
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h
+   sub al,30h
+   mov bl,10    
+   mul bl       
+   mov auxDi,al 
+   mov ah,01h   
+   int 21h      
+   sub al,30h  
+   add auxDi,al   
+   mov bl,auxDi   
+   mov inDi,bx 
+;************** FINAL ***************** 
+   MOV X, 10
+   MOV Y, 03
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSDiag2        
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h 
+   sub al,30h 
+   mov bl,10    
+   mul bl       
+   mov auxfDi,al
+   mov ah,01h  
+   int 21h      
+   sub al,30h 
+   add auxfDi,al   
+   mov bl,auxfDi  
+   mov finDi,bx 
+;************** COLOR *****************
+   MOV X, 10
+   MOV Y, 04
+   MOV AH,2
+   MOV DL,X
+   MOV DH,Y
+   INT 10H   
+   LEA DX, MSDiag3    
+   MOV AH,9H
+   INT 21H
+   mov ah,01h   
+   int 21h  
+   sub al,30h 
+   mov bl,10    
+   mul bl      
+   mov auxDiColor,al 
+   mov ah,01h 
+   int 21h      
+   sub al,30h 
+   add auxDiColor,al
+   mov bl,auxDiColor   
+   mov bh,0h   
+   mov DiColor,bl
+        mov cx, inDi 
+      bucle1:
+        mov dx, cx
+        mov al, DiColor
+        mov ah, 0ch   
+        int 10h        
+        cmp cx, finDi   
+        jz fin1
+        inc cx        a
+        add DiColor ,0  
+        jmp bucle1   
+        fin1:
+    ;esperar
+    mov ah,00
+    int 16h 
+    mov ah,00
+    mov al,03 
+    int 10h    
+    CALL limpiar
+    CALL inicio
